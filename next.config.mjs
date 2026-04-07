@@ -1,6 +1,6 @@
-import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
+
+const nextConfig = {
   images: {
     domains: ["cdn.nba.com", "ak-static.cms.nba.com"],
   },
