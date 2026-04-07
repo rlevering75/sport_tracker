@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "db:seed": "dotenv -e .env.local -- tsx scripts/seed.ts",
-    "db:push": "dotenv -e .env.local -- drizzle-kit push"
+    "db:push": "dotenv -e .env.local -- drizzle-kit push",
+    "db:seed-allstars": "dotenv -e .env.local -- tsx scripts/seed-allstars.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.4",
