@@ -1,57 +1,43 @@
-const players = [
-  {
-    name: "LeBron James",
-    team: "LAL",
-    pos: "SF",
-    pts: 25.7,
-    reb: 7.3,
-    ast: 8.3,
-    fg: "50.4%",
-    trend: "up",
-  },
-  {
-    name: "Stephen Curry",
-    team: "GSW",
-    pos: "PG",
-    pts: 26.4,
-    reb: 4.5,
-    ast: 5.1,
-    fg: "45.2%",
-    trend: "up",
-  },
-  {
-    name: "Nikola Jokić",
-    team: "DEN",
-    pos: "C",
-    pts: 26.4,
-    reb: 12.4,
-    ast: 9.0,
-    fg: "58.3%",
-    trend: "up",
-  },
-  {
-    name: "Luka Dončić",
-    team: "DAL",
-    pos: "PG",
-    pts: 33.9,
-    reb: 9.2,
-    ast: 9.8,
-    fg: "47.5%",
-    trend: "down",
-  },
-  {
-    name: "Giannis Antetokounmpo",
-    team: "MIL",
-    pos: "PF",
-    pts: 30.4,
-    reb: 11.5,
-    ast: 6.5,
-    fg: "61.0%",
-    trend: "up",
-  },
+import { db } from "@/lib/db";
+import { players, seasonStats } from "@/lib/schema";
+import { eq, desc } from "drizzle-orm";
+
+async function getTopPlayers() {
+  try {
+    return await db
+      .select({
+        id: players.id,
+        name: players.name,
+        team: players.team,
+        position: players.position,
+        pts: seasonStats.pointsPerGame,
+        reb: seasonStats.reboundsPerGame,
+        ast: seasonStats.assistsPerGame,
+        fg: seasonStats.fieldGoalPct,
+        trend: seasonStats.trend,
+      })
+      .from(players)
+      .innerJoin(seasonStats, eq(players.id, seasonStats.playerId))
+      .orderBy(desc(seasonStats.pointsPerGame))
+      .limit(7);
+  } catch {
+    return null;
+  }
+}
+
+// Fallback static data shown before DB is seeded
+const FALLBACK = [
+  { id: 1, name: "Joel Embiid", team: "PHI", position: "C", pts: "34.7", reb: "11.0", ast: "5.6", fg: "52.8", trend: "down" },
+  { id: 2, name: "Luka Dončić", team: "DAL", position: "PG", pts: "33.9", reb: "9.2", ast: "9.8", fg: "47.5", trend: "down" },
+  { id: 3, name: "Giannis Antetokounmpo", team: "MIL", position: "PF", pts: "30.4", reb: "11.5", ast: "6.5", fg: "61.0", trend: "up" },
+  { id: 4, name: "Shai Gilgeous-Alexander", team: "OKC", position: "PG", pts: "30.1", reb: "5.5", ast: "6.2", fg: "53.5", trend: "up" },
+  { id: 5, name: "Stephen Curry", team: "GSW", position: "PG", pts: "26.4", reb: "4.5", ast: "5.1", fg: "45.2", trend: "up" },
 ];
 
-export default function StatsPreview() {
+export default async function StatsPreview() {
+  const data = await getTopPlayers();
+  const rows = (data && data.length > 0 ? data : FALLBACK) as typeof FALLBACK;
+
   return (
     <section id="stats" className="py-24 bg-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,14 +50,14 @@ export default function StatsPreview() {
             Season Leaders Preview
           </h2>
           <p className="text-slate-400 text-lg">
-            A snapshot of top performers this season. Explore full stats on
-            every player.
+            Top scorers from the 2023–24 season. Explore full stats on every
+            player.
           </p>
         </div>
 
         {/* Table */}
         <div className="glass rounded-2xl overflow-hidden">
-          {/* Table header */}
+          {/* Header row */}
           <div className="grid grid-cols-8 gap-4 px-6 py-3 bg-white/5 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-white/10">
             <span className="col-span-3">Player</span>
             <span className="text-center">PTS</span>
@@ -81,23 +67,21 @@ export default function StatsPreview() {
             <span className="text-center">Trend</span>
           </div>
 
-          {/* Rows */}
-          {players.map((p, i) => (
+          {rows.map((p, i) => (
             <div
-              key={p.name}
+              key={p.id}
               className={`grid grid-cols-8 gap-4 px-6 py-4 hover:bg-white/5 transition-colors cursor-pointer ${
-                i !== players.length - 1 ? "border-b border-white/5" : ""
+                i !== rows.length - 1 ? "border-b border-white/5" : ""
               }`}
             >
               <div className="col-span-3 flex items-center gap-3">
-                {/* Avatar placeholder */}
                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-sm font-bold shrink-0">
-                  {p.name.split(" ").map((n) => n[0]).join("")}
+                  {p.name.split(" ").map((n: string) => n[0]).join("")}
                 </div>
                 <div>
                   <p className="text-white font-medium text-sm">{p.name}</p>
                   <p className="text-slate-500 text-xs">
-                    {p.team} · {p.pos}
+                    {p.team} · {p.position}
                   </p>
                 </div>
               </div>
@@ -111,7 +95,7 @@ export default function StatsPreview() {
                 {p.ast}
               </span>
               <span className="text-center text-slate-300 self-center">
-                {p.fg}
+                {p.fg}%
               </span>
               <span className="text-center self-center">
                 {p.trend === "up" ? (
