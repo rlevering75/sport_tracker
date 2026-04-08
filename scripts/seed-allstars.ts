@@ -18,6 +18,163 @@ const CSV_PATH = path.resolve(
 const sql = neon(process.env.DATABASE_URL!);
 const db = drizzle(sql);
 
+// ─── Authoritative award counts (hardcoded from official records) ─────────────
+
+const MVP_WINS: Record<string, number> = {
+  "Kareem Abdul-Jabbar": 6,
+  "Michael Jordan": 5,
+  "Bill Russell": 5,
+  "LeBron James": 4,
+  "Wilt Chamberlain": 4,
+  "Nikola Jokić": 3,
+  "Magic Johnson": 3,
+  "Larry Bird": 3,
+  "Moses Malone": 3,
+  "Giannis Antetokounmpo": 2,
+  "Stephen Curry": 2,
+  "Steve Nash": 2,
+  "Tim Duncan": 2,
+  "Karl Malone": 2,
+  "Bob Pettit": 2,
+  "Shai Gilgeous-Alexander": 1,
+  "Joel Embiid": 1,
+  "James Harden": 1,
+  "Russell Westbrook": 1,
+  "Kevin Durant": 1,
+  "Derrick Rose": 1,
+  "Kobe Bryant": 1,
+  "Dirk Nowitzki": 1,
+  "Kevin Garnett": 1,
+  "Allen Iverson": 1,
+  "Shaquille O'Neal": 1,
+  "David Robinson": 1,
+  "Hakeem Olajuwon": 1,
+  "Charles Barkley": 1,
+  "Julius Erving": 1,
+  "Bill Walton": 1,
+  "Bob McAdoo": 1,
+  "Dave Cowens": 1,
+  "Willis Reed": 1,
+  "Wes Unseld": 1,
+  "Oscar Robertson": 1,
+  "Bob Cousy": 1,
+};
+
+const CHAMPIONSHIPS: Record<string, number> = {
+  "Bill Russell": 11,
+  "Sam Jones": 10,
+  "Tom Heinsohn": 8,
+  "John Havlicek": 8,
+  "Bob Cousy": 6,
+  "Kareem Abdul-Jabbar": 6,
+  "Michael Jordan": 6,
+  "Scottie Pippen": 6,
+  "Magic Johnson": 5,
+  "Kobe Bryant": 5,
+  "Tim Duncan": 5,
+  "LeBron James": 4,
+  "Stephen Curry": 4,
+  "Shaquille O'Neal": 4,
+  "Bob Pettit": 3,
+  "Larry Bird": 3,
+  "Dwyane Wade": 3,
+  "Isiah Thomas": 2,
+  "Hakeem Olajuwon": 2,
+  "Wilt Chamberlain": 2,
+  "Kevin Durant": 2,
+  "Giannis Antetokounmpo": 1,
+  "Nikola Jokić": 1,
+  "Dirk Nowitzki": 1,
+  "Chauncey Billups": 1,
+  "Dennis Rodman": 1,
+  "Elgin Baylor": 0, // famously never won
+  "Jerry West": 1,
+  "Willis Reed": 2,
+  "Walt Frazier": 2,
+  "Dave DeBusschere": 2,
+  "Bill Bradley": 2,
+  "Dave Cowens": 2,
+  "Jo Jo White": 2,
+  "Paul Pierce": 1,
+  "Ray Allen": 2,
+  "Kevin Garnett": 1,
+  "Paul Silas": 3,
+  "Kawhi Leonard": 2,
+  "Andre Iguodala": 4,
+  "Draymond Green": 4,
+  "Klay Thompson": 4,
+  "James Worthy": 3,
+  "Byron Scott": 3,
+  "A.C. Green": 3,
+  "Horace Grant": 1,
+  "Robert Parish": 4,
+  "Kevin McHale": 3,
+  "Dennis Johnson": 3,
+  "Danny Ainge": 2,
+  "Clyde Drexler": 1,
+  "Charles Barkley": 0,
+  "Patrick Ewing": 0,
+  "Reggie Miller": 0,
+  "John Stockton": 0,
+  "Karl Malone": 0,
+  "Chris Paul": 0,
+  "Tony Parker": 4,
+  "Manu Ginóbili": 4,
+  "David Robinson": 2,
+  "Dennis Johnson": 3,
+  "Joe Dumars": 2,
+  "Dirk Nowitzki": 1,
+  "Shai Gilgeous-Alexander": 1,
+  "Jaylen Brown": 1,
+  "Julius Erving": 0,
+};
+
+const FINALS_MVP: Record<string, number> = {
+  "Michael Jordan": 6,
+  "LeBron James": 4,
+  "Tim Duncan": 3,
+  "Shaquille O'Neal": 3,
+  "Magic Johnson": 3,
+  "Kawhi Leonard": 2,
+  "Kevin Durant": 2,
+  "Kobe Bryant": 2,
+  "Hakeem Olajuwon": 2,
+  "Larry Bird": 2,
+  "Kareem Abdul-Jabbar": 2,
+  "Willis Reed": 2,
+  "Shai Gilgeous-Alexander": 1,
+  "Jaylen Brown": 1,
+  "Nikola Jokić": 1,
+  "Stephen Curry": 1,
+  "Giannis Antetokounmpo": 1,
+  "Dwyane Wade": 1,
+  "Dirk Nowitzki": 1,
+  "Chauncey Billups": 1,
+  "James Worthy": 1,
+  "Isiah Thomas": 1,
+  "Joe Dumars": 1,
+  "Moses Malone": 1,
+  "Paul Pierce": 1,
+  "Dennis Johnson": 1,
+  "Jo Jo White": 1,
+  "Rick Barry": 1,
+  "Jerry West": 1,
+};
+
+function getMvps(name: string): number {
+  return MVP_WINS[name] ?? 0;
+}
+
+function getChampionships(name: string): number {
+  return CHAMPIONSHIPS[name] ?? 0;
+}
+
+function getFinalsMvps(name: string): number {
+  return FINALS_MVP[name] ?? 0;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+
 function parseNum(v: string | undefined): string | null {
   if (!v || v.trim() === "" || v.trim() === "nan" || v.trim() === "NaN") return null;
   const n = parseFloat(v.trim());
@@ -101,9 +258,9 @@ async function seed() {
       dbpm:           parseNum(r["DBPM"]),
       vorp:           parseNum(r["VORP"]),
 
-      mvps:           parseInt2(r["MVPs"]),
-      finalsMvps:     parseInt2(r["Finals_MVPs"]),
-      championships:  parseInt2(r["Championships"]),
+      mvps:           getMvps(r["Player"]),
+      finalsMvps:     getFinalsMvps(r["Player"]),
+      championships:  getChampionships(r["Player"]),
       allNbaTotal:    parseInt2(r["All-NBA (Total)"]),
       allNba1st:      parseInt2(r["All-NBA 1st"]),
       allNba2nd:      parseInt2(r["All-NBA 2nd"]),
