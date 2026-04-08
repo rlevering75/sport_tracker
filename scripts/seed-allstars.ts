@@ -61,70 +61,94 @@ const MVP_WINS: Record<string, number> = {
 };
 
 const CHAMPIONSHIPS: Record<string, number> = {
+  // 11
   "Bill Russell": 11,
+  // 10
   "Sam Jones": 10,
+  // 8
   "Tom Heinsohn": 8,
   "John Havlicek": 8,
+  // 6
   "Bob Cousy": 6,
-  "Kareem Abdul-Jabbar": 6,
-  "Michael Jordan": 6,
+  "Kareem Abdul-Jabbar": 6,     // 1971 MIL + 1980/82/85/87/88 LAL
+  "Michael Jordan": 6,           // 1991-93, 1996-98 CHI
   "Scottie Pippen": 6,
-  "Magic Johnson": 5,
-  "Kobe Bryant": 5,
-  "Tim Duncan": 5,
-  "LeBron James": 4,
-  "Stephen Curry": 4,
-  "Shaquille O'Neal": 4,
-  "Bob Pettit": 3,
+  // 5
+  "Magic Johnson": 5,            // 1980/82/85/87/88 LAL
+  "Kobe Bryant": 5,              // 2000/01/02/09/10 LAL
+  "Tim Duncan": 5,               // 1999/03/05/07/14 SAS
+  "Dennis Rodman": 5,            // 1989/90 DET + 1996/97/98 CHI
+  "Michael Cooper": 5,           // 1980/82/85/87/88 LAL
+  // 4
+  "LeBron James": 4,             // 2012/13 MIA, 2016 CLE, 2020 LAL
+  "Stephen Curry": 4,            // 2015/17/18/22 GSW
+  "Shaquille O'Neal": 4,         // 2000/01/02 LAL + 2006 MIA
+  "Tony Parker": 4,              // 2003/05/07/14 SAS
+  "Manu Ginóbili": 4,            // 2003/05/07/14 SAS
+  "Draymond Green": 4,           // 2015/17/18/22 GSW
+  "Klay Thompson": 4,            // 2015/17/18/22 GSW
+  "Andre Iguodala": 4,           // 2015/17/18/22 GSW
+  "Robert Parish": 4,            // 1981/84/86 BOS + 1997 CHI
+  "A.C. Green": 4,               // 1985/87/88 LAL + 2000 LAL
+  "Horace Grant": 4,             // 1991/92/93 CHI + 2001 LAL
+  // 3
   "Larry Bird": 3,
-  "Dwyane Wade": 3,
-  "Isiah Thomas": 2,
-  "Hakeem Olajuwon": 2,
-  "Wilt Chamberlain": 2,
-  "Kevin Durant": 2,
-  "Giannis Antetokounmpo": 1,
-  "Nikola Jokić": 1,
-  "Dirk Nowitzki": 1,
-  "Chauncey Billups": 1,
-  "Dennis Rodman": 1,
-  "Elgin Baylor": 0, // famously never won
-  "Jerry West": 1,
-  "Willis Reed": 2,
-  "Walt Frazier": 2,
-  "Dave DeBusschere": 2,
-  "Bill Bradley": 2,
-  "Dave Cowens": 2,
-  "Jo Jo White": 2,
-  "Paul Pierce": 1,
-  "Ray Allen": 2,
-  "Kevin Garnett": 1,
-  "Paul Silas": 3,
-  "Kawhi Leonard": 2,
-  "Andre Iguodala": 4,
-  "Draymond Green": 4,
-  "Klay Thompson": 4,
-  "James Worthy": 3,
-  "Byron Scott": 3,
-  "A.C. Green": 3,
-  "Horace Grant": 1,
-  "Robert Parish": 4,
   "Kevin McHale": 3,
-  "Dennis Johnson": 3,
-  "Danny Ainge": 2,
-  "Clyde Drexler": 1,
+  "Dennis Johnson": 3,           // 1979 SEA + 1984/86 BOS
+  "James Worthy": 3,             // 1985/87/88 LAL
+  "Byron Scott": 3,              // 1985/87/88 LAL
+  "Paul Silas": 3,               // 1974/76 BOS + 1979 SEA
+  "Dwyane Wade": 3,              // 2006/12/13 MIA
+  // 2
+  "Kevin Durant": 2,             // 2017/18 GSW
+  "Kawhi Leonard": 2,            // 2014 SAS + 2019 TOR
+  "Hakeem Olajuwon": 2,          // 1994/95 HOU
+  "Isiah Thomas": 2,             // 1989/90 DET
+  "Joe Dumars": 2,               // 1989/90 DET
+  "David Robinson": 2,           // 1999/03 SAS
+  "Willis Reed": 2,              // 1970/73 NYK
+  "Walt Frazier": 2,             // 1970/73 NYK
+  "Dave DeBusschere": 2,         // 1970/73 NYK
+  "Bill Bradley": 2,             // 1970/73 NYK
+  "Dave Cowens": 2,              // 1974/76 BOS
+  "Jo Jo White": 2,              // 1974/76 BOS
+  "Ray Allen": 2,                // 2008 BOS + 2013 MIA
+  "Wilt Chamberlain": 2,         // 1967 PHI + 1972 LAL
+  "Danny Ainge": 2,              // 1984/86 BOS
+  "Pau Gasol": 2,                // 2009/10 LAL
+  "Chris Bosh": 2,               // 2012/13 MIA
+  "Bill Walton": 2,              // 1977 POR + 1986 BOS
+  // 1
+  "Giannis Antetokounmpo": 1,    // 2021 MIL
+  "Nikola Jokić": 1,             // 2023 DEN
+  "Dirk Nowitzki": 1,            // 2011 DAL
+  "Chauncey Billups": 1,         // 2004 DET
+  "Paul Pierce": 1,              // 2008 BOS
+  "Kevin Garnett": 1,            // 2008 BOS
+  "Clyde Drexler": 1,            // 1995 HOU
+  "Oscar Robertson": 1,          // 1971 MIL
+  "Julius Erving": 1,            // 1983 PHI
+  "Moses Malone": 1,             // 1983 PHI
+  "Bob Pettit": 1,               // 1958 STL Hawks
+  "Jerry West": 1,               // 1972 LAL
+  "Rick Barry": 1,               // 1975 GSW
+  "Wes Unseld": 1,               // 1978 WAS
+  "Elvin Hayes": 1,              // 1978 WAS
+  "Kyrie Irving": 1,             // 2016 CLE
+  "Anthony Davis": 1,            // 2020 LAL
+  "Jason Kidd": 1,               // 2011 DAL
+  "Metta World Peace": 1,        // 2010 LAL (as Ron Artest)
+  "Ron Artest": 1,
+  "Shai Gilgeous-Alexander": 1,  // 2025 OKC
+  "Jaylen Brown": 1,             // 2024 BOS
+  // 0 — famously never won
+  "Elgin Baylor": 0,
   "Charles Barkley": 0,
   "Patrick Ewing": 0,
   "Reggie Miller": 0,
   "John Stockton": 0,
   "Karl Malone": 0,
   "Chris Paul": 0,
-  "Tony Parker": 4,
-  "Manu Ginóbili": 4,
-  "David Robinson": 2,
-  "Joe Dumars": 2,
-  "Shai Gilgeous-Alexander": 1,
-  "Jaylen Brown": 1,
-  "Julius Erving": 0,
 };
 
 const FINALS_MVP: Record<string, number> = {

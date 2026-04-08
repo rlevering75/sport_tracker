@@ -36,6 +36,7 @@ const COLUMNS: { label: string; key: SortKey; numeric?: boolean }[] = [
   { label: "PTS+",   key: "pts_created_100", numeric: true },
   { label: "BPM",    key: "bpm",             numeric: true },
   { label: "DBPM",   key: "dbpm",            numeric: true },
+  { label: "CHAMP",  key: "championships",   numeric: true },
   { label: "Awards", key: "mvps",            numeric: false },
 ];
 
@@ -47,10 +48,9 @@ function fmt(v: string | number | null, decimals = 1) {
 
 function badges(row: Row) {
   const b: string[] = [];
-  if ((row.mvps ?? 0) > 0)          b.push(`${row.mvps}× MVP`);
-  if ((row.finalsMvps ?? 0) > 0)    b.push(`${row.finalsMvps}× Finals MVP`);
-  if ((row.championships ?? 0) > 0) b.push(`${row.championships}× Champ`);
-  if ((row.dpoy ?? 0) > 0)          b.push(`${row.dpoy}× DPOY`);
+  if ((row.mvps ?? 0) > 0)       b.push(`${row.mvps}× MVP`);
+  if ((row.finalsMvps ?? 0) > 0) b.push(`${row.finalsMvps}× FMVP`);
+  if ((row.dpoy ?? 0) > 0)       b.push(`${row.dpoy}× DPOY`);
   return b;
 }
 
@@ -75,7 +75,7 @@ export default function AllStarTable({ initialRows }: { initialRows: Row[] }) {
   return (
     <div className={`glass rounded-2xl overflow-x-auto transition-opacity duration-200 ${isPending ? "opacity-50" : "opacity-100"}`}>
       {/* Header */}
-      <div className="min-w-[960px] grid grid-cols-13 gap-2 px-5 py-3 bg-white/5 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-white/10">
+      <div className="min-w-[1040px] grid grid-cols-14 gap-2 px-5 py-3 bg-white/5 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-white/10">
         <span className="col-span-1 text-center">#</span>
         <span className="col-span-3">Player</span>
         {COLUMNS.map((col) => (
@@ -106,7 +106,7 @@ export default function AllStarTable({ initialRows }: { initialRows: Row[] }) {
           return (
             <div
               key={p.name}
-              className={`grid grid-cols-13 gap-2 px-5 py-4 hover:bg-white/5 transition-colors ${
+              className={`grid grid-cols-14 gap-2 px-5 py-4 hover:bg-white/5 transition-colors ${
                 i !== rows.length - 1 ? "border-b border-white/5" : ""
               }`}
             >
@@ -163,6 +163,17 @@ export default function AllStarTable({ initialRows }: { initialRows: Row[] }) {
                   : "text-red-400"
               }`}>
                 {Number(p.bpm) > 0 ? "+" : ""}{fmt(sortKey === "dbpm" ? p.dbpm : p.bpm)}
+              </span>
+
+              {/* Championships */}
+              <span className={`col-span-1 text-center text-sm self-center font-mono font-bold ${
+                sortKey === "championships"
+                  ? "text-yellow-300"
+                  : (p.championships ?? 0) > 0
+                  ? "text-yellow-400"
+                  : "text-slate-600"
+              }`}>
+                {(p.championships ?? 0) > 0 ? p.championships : "—"}
               </span>
 
               {/* Awards */}
