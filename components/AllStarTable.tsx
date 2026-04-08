@@ -36,7 +36,7 @@ const COLUMNS: { label: string; key: SortKey; numeric?: boolean }[] = [
   { label: "PTS+",   key: "pts_created_100", numeric: true },
   { label: "BPM",    key: "bpm",             numeric: true },
   { label: "DBPM",   key: "dbpm",            numeric: true },
-  { label: "CHAMP",  key: "championships",   numeric: true },
+  { label: "Rings",  key: "championships",   numeric: true },
   { label: "Awards", key: "mvps",            numeric: false },
 ];
 
@@ -100,15 +100,13 @@ export default function AllStarTable({ initialRows }: { initialRows: Row[] }) {
         ))}
       </div>
 
-      <div className="min-w-[960px]">
+      <div className="min-w-[1040px] [&>*:last-child]:border-b-0">
         {rows.map((p, i) => {
           const badgeList = badges(p);
           return (
             <div
               key={p.name}
-              className={`grid grid-cols-14 gap-2 px-5 py-4 hover:bg-white/5 transition-colors ${
-                i !== rows.length - 1 ? "border-b border-white/5" : ""
-              }`}
+              className="grid grid-cols-14 gap-2 px-5 py-4 hover:bg-white/5 transition-colors border-b border-white/5"
             >
               {/* Rank */}
               <span className="col-span-1 text-center text-slate-500 font-mono text-sm self-center">
