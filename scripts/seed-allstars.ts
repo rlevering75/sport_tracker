@@ -171,6 +171,39 @@ function getFinalsMvps(name: string): number {
   return FINALS_MVP[name] ?? 0;
 }
 
+// ─── DPOY winners (1982-83 through 2024-25, official NBA records) ─────────────
+
+const DPOY_WINS: Record<string, number> = {
+  "Rudy Gobert":              4, // 2017-18, 2018-19, 2020-21, 2023-24
+  "Ben Wallace":              4, // 2001-02, 2002-03, 2004-05, 2005-06
+  "Dikembe Mutombo":          4, // 1994-95, 1996-97, 1997-98, 2000-01
+  "Dwight Howard":            3, // 2008-09, 2009-10, 2010-11
+  "Kawhi Leonard":            2, // 2014-15, 2015-16
+  "Hakeem Olajuwon":          2, // 1992-93, 1993-94
+  "Dennis Rodman":            2, // 1989-90, 1990-91
+  "Alonzo Mourning":          2, // 1998-99, 1999-00
+  "Mark Eaton":               2, // 1984-85, 1988-89
+  "Sidney Moncrief":          2, // 1982-83, 1983-84
+  "Giannis Antetokounmpo":    1, // 2019-20
+  "Draymond Green":           1, // 2016-17
+  "Joakim Noah":              1, // 2013-14
+  "Marc Gasol":               1, // 2012-13
+  "Tyson Chandler":           1, // 2011-12
+  "Kevin Garnett":            1, // 2007-08
+  "Marcus Camby":             1, // 2006-07
+  "Metta World Peace":        1, // 2003-04 (as Ron Artest)
+  "Ron Artest":               1, // same player, alternate name in data
+  "Gary Payton":              1, // 1995-96
+  "David Robinson":           1, // 1991-92
+  "Michael Jordan":           1, // 1987-88
+  "Evan Mobley":              1, // 2024-25
+  "Jaren Jackson Jr.":        1, // 2022-23
+};
+
+function getDpoy(name: string): number {
+  return DPOY_WINS[name] ?? 0;
+}
+
 // ──────────────────────────────────────────────────────────────────────────────
 
 function parseNum(v: string | undefined): string | null {
@@ -265,7 +298,7 @@ async function seed() {
       allNba3rd:      parseInt2(r["All-NBA 3rd"]),
       allDef1st:      parseInt2(r["All-Def 1st"]),
       allDef2nd:      parseInt2(r["All-Def 2nd"]),
-      dpoy:           parseInt2(r["DPOY"]),
+      dpoy:           getDpoy(r["Player"]),
     }));
 
     await db.insert(allstarPer100).values(values);
