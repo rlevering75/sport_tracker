@@ -8,7 +8,7 @@ export const runtime = "edge";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
-    const limit  = Math.min(parseInt(searchParams.get("limit")  ?? "100"), 636);
+    const limit  = Math.min(parseInt(searchParams.get("limit")  ?? "50"), 636);
     const offset = parseInt(searchParams.get("offset") ?? "0");
     const search = searchParams.get("q") ?? "";
     const sort   = searchParams.get("sort") ?? "pts_created_100";
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     const allowedSorts = new Set([
       "rank", "pts_created_100", "pts_100", "ast_100", "reb_100",
       "stl_100", "blk_100", "bpm", "dbpm", "per", "ws", "vorp",
-      "mvps", "finals_mvps", "championships", "all_nba_total",
+      "mvps", "finals_mvps", "championships", "all_nba_total", "ts_pct",
     ]);
     const sortCol = allowedSorts.has(sort) ? sort : "pts_created_100";
     const sortDir = order === "asc" ? asc : desc;
