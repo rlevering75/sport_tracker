@@ -26,7 +26,7 @@ type Row = {
 type SortKey =
   | "pts_created_100" | "pts_100" | "ast_100" | "reb_100"
   | "stl_100" | "blk_100" | "bpm" | "dbpm" | "ts_pct"
-  | "mvps" | "championships" | "all_nba_total";
+  | "mvps" | "championships" | "all_nba_total" | "finals_mvps" | "dpoy";
 
 const COLUMNS: { label: string; key: SortKey }[] = [
   { label: "PTS",    key: "pts_100"         },
@@ -38,7 +38,8 @@ const COLUMNS: { label: string; key: SortKey }[] = [
   { label: "TS%",    key: "ts_pct"          },
   { label: "BPM",    key: "bpm"             },
   { label: "Rings",  key: "championships"   },
-  { label: "Awards", key: "dbpm"            },
+  { label: "DBPM",   key: "dbpm"            },
+  { label: "Awards", key: "mvps"            },
 ];
 
 const LIMIT = 50;
@@ -150,7 +151,7 @@ export default function AllStarTable({
       {/* Table */}
       <div className={`glass rounded-2xl overflow-x-auto transition-opacity duration-200 ${isPending ? "opacity-50" : "opacity-100"}`}>
         {/* Header */}
-        <div className="min-w-[1040px] grid grid-cols-14 gap-2 px-5 py-3 bg-white/5 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-white/10">
+        <div className="min-w-[1120px] grid grid-cols-15 gap-2 px-5 py-3 bg-white/5 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-white/10">
           <span className="col-span-1 text-center">#</span>
           <span className="col-span-3">Player</span>
           {COLUMNS.map((col) => (
@@ -170,7 +171,7 @@ export default function AllStarTable({
         </div>
 
         {/* Rows */}
-        <div className="min-w-[1040px] [&>*:last-child]:border-b-0">
+        <div className="min-w-[1120px] [&>*:last-child]:border-b-0">
           {rows.length === 0 ? (
             <div className="px-5 py-10 text-center text-slate-500 text-sm">
               No players found matching &ldquo;{search}&rdquo;
@@ -179,7 +180,7 @@ export default function AllStarTable({
             return (
               <div
                 key={`${p.name}-${i}`}
-                className="grid grid-cols-14 gap-2 px-5 py-3.5 hover:bg-white/5 transition-colors border-b border-white/5"
+                className="grid grid-cols-15 gap-2 px-5 py-3.5 hover:bg-white/5 transition-colors border-b border-white/5"
               >
                 {/* Rank */}
                 <span className="col-span-1 text-center text-slate-500 font-mono text-sm self-center">
@@ -254,7 +255,7 @@ export default function AllStarTable({
                   {(p.championships ?? 0) > 0 ? p.championships : "—"}
                 </span>
 
-                {/* Awards (DBPM) */}
+                {/* DBPM */}
                 <span className={`col-span-1 text-center text-sm self-center font-mono ${
                   sortKey === "dbpm" ? "text-white font-bold"
                   : Number(p.dbpm) >= 2 ? "text-green-400"
@@ -263,6 +264,25 @@ export default function AllStarTable({
                 }`}>
                   {Number(p.dbpm) > 0 ? "+" : ""}{fmt(p.dbpm)}
                 </span>
+
+                {/* Awards: MVP / Finals MVP / DPOY */}
+                <div className="col-span-1 flex flex-wrap gap-1 self-center justify-center">
+                  {(p.mvps ?? 0) > 0 && (
+                    <span className="text-[10px] bg-yellow-500/20 text-yellow-300 px-1.5 py-0.5 rounded font-medium whitespace-nowrap">
+                      {p.mvps}× MVP
+                    </span>
+                  )}
+                  {(p.finalsMvps ?? 0) > 0 && (
+                    <span className="text-[10px] bg-orange-500/20 text-orange-300 px-1.5 py-0.5 rounded font-medium whitespace-nowrap">
+                      {p.finalsMvps}× FMVP
+                    </span>
+                  )}
+                  {(p.dpoy ?? 0) > 0 && (
+                    <span className="text-[10px] bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded font-medium whitespace-nowrap">
+                      {p.dpoy}× DPOY
+                    </span>
+                  )}
+                </div>
               </div>
             );
           })}
