@@ -194,7 +194,7 @@ export default function AllStarTable({
                   </div>
                   <div>
                     <p className="text-white font-medium text-sm leading-tight">{p.name}</p>
-                    <p className="text-slate-500 text-xs">{p.yearsActive} · {p.allstarSeasons}× AS</p>
+                    <p className="text-slate-500 text-xs">{p.yearsActive} · {p.allNbaTotal ?? 0}× All-NBA</p>
                   </div>
                 </div>
 
