@@ -20,6 +20,8 @@ type Row = {
   finalsMvps: number | null;
   championships: number | null;
   allNbaTotal: number | null;
+  allNba1st: number | null;
+  allNba2nd: number | null;
   dpoy: number | null;
 };
 
@@ -194,7 +196,12 @@ export default function AllStarTable({
                   </div>
                   <div>
                     <p className="text-white font-medium text-sm leading-tight">{p.name}</p>
-                    <p className="text-slate-500 text-xs">{p.yearsActive} · {p.allNbaTotal ?? 0}× All-NBA</p>
+                    <p className="text-slate-500 text-xs">
+                      {p.yearsActive}
+                      {((p.allNba1st ?? 0) > 0 || (p.allNba2nd ?? 0) > 0) && (
+                        <> · {(p.allNba1st ?? 0) > 0 && <>{p.allNba1st}× 1st</>}{(p.allNba1st ?? 0) > 0 && (p.allNba2nd ?? 0) > 0 && " · "}{(p.allNba2nd ?? 0) > 0 && <>{p.allNba2nd}× 2nd</>} All-NBA</>
+                      )}
+                    </p>
                   </div>
                 </div>
 
