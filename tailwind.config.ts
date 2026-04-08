@@ -22,6 +22,9 @@ const config: Config = {
         "court-gradient":
           "linear-gradient(135deg, #0f172a 0%, #1d428a 50%, #0f172a 100%)",
       },
+      gridTemplateColumns: {
+        "13": "repeat(13, minmax(0, 1fr))",
+      },
     },
   },
   plugins: [],

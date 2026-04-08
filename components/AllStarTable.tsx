@@ -16,6 +16,7 @@ type Row = {
   bpm: string | null;
   dbpm: string | null;
   mvps: number | null;
+  finalsMvps: number | null;
   championships: number | null;
   allNbaTotal: number | null;
   dpoy: number | null;
@@ -47,6 +48,7 @@ function fmt(v: string | number | null, decimals = 1) {
 function badges(row: Row) {
   const b: string[] = [];
   if ((row.mvps ?? 0) > 0)          b.push(`${row.mvps}× MVP`);
+  if ((row.finalsMvps ?? 0) > 0)    b.push(`${row.finalsMvps}× Finals MVP`);
   if ((row.championships ?? 0) > 0) b.push(`${row.championships}× Champ`);
   if ((row.dpoy ?? 0) > 0)          b.push(`${row.dpoy}× DPOY`);
   return b;
@@ -58,7 +60,6 @@ export default function AllStarTable({ initialRows }: { initialRows: Row[] }) {
   const [isPending, startTransition] = useTransition();
 
   function handleSort(key: SortKey) {
-    // If already sorted by this key, do nothing (always desc)
     setSortKey(key);
     startTransition(async () => {
       try {
@@ -74,7 +75,7 @@ export default function AllStarTable({ initialRows }: { initialRows: Row[] }) {
   return (
     <div className={`glass rounded-2xl overflow-x-auto transition-opacity duration-200 ${isPending ? "opacity-50" : "opacity-100"}`}>
       {/* Header */}
-      <div className="min-w-[900px] grid grid-cols-12 gap-2 px-5 py-3 bg-white/5 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-white/10">
+      <div className="min-w-[960px] grid grid-cols-13 gap-2 px-5 py-3 bg-white/5 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-white/10">
         <span className="col-span-1 text-center">#</span>
         <span className="col-span-3">Player</span>
         {COLUMNS.map((col) => (
@@ -99,13 +100,13 @@ export default function AllStarTable({ initialRows }: { initialRows: Row[] }) {
         ))}
       </div>
 
-      <div className="min-w-[900px]">
+      <div className="min-w-[960px]">
         {rows.map((p, i) => {
           const badgeList = badges(p);
           return (
             <div
               key={p.name}
-              className={`grid grid-cols-12 gap-2 px-5 py-4 hover:bg-white/5 transition-colors ${
+              className={`grid grid-cols-13 gap-2 px-5 py-4 hover:bg-white/5 transition-colors ${
                 i !== rows.length - 1 ? "border-b border-white/5" : ""
               }`}
             >
